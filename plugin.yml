@@ -1,9 +1,0 @@
-name: BowParkour
-author: MCDylan13
-main: com.gmail.dylan354100mail.bowparkour.BowParkour
-version: 1.0
-commands:
-   bp:
-      description: Info del plugin.
-      permission: bowparkour.user
-      permission-message: No tienes permisos para utilizar este comando.
