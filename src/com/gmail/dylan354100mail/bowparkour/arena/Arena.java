@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import com.gmail.dylan354100mail.bowparkour.BowParkour;
@@ -69,5 +70,15 @@ public class Arena{
 	{
 		BedSpawn = loc;
 		return true;
+	}
+	public static Scoreboard sc = null;
+	public static boolean setScoreboard(Scoreboard scoreboard)
+	{
+		sc = scoreboard;
+		return false;
+	}
+	public static Scoreboard getScoreboard()
+	{
+		return sc;
 	}
 }

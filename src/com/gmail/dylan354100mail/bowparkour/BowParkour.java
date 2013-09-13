@@ -15,6 +15,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.event.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -54,11 +59,9 @@ public class BowParkour extends JavaPlugin implements Listener{
                  event.setLine(0, ChatColor.DARK_RED+"[BowParkour]");
                  if(event.getLine(1).contains("Join")){
                  event.setLine(1, "Click to Join");
-                 event.setLine(2, "by MCDylan13");
                  p.sendMessage(ChatColor.BLUE + "Cartel creado correctamente");
             }else if(event.getLine(1).contains("Finish")){
             	event.setLine(1, "Click to Finish");
-            	event.setLine(2, "by MCDylan13");
             	}
             }
     	}
@@ -72,8 +75,17 @@ public class BowParkour extends JavaPlugin implements Listener{
     		Player player = e.getPlayer();
 		    ItemStack bow = new ItemStack(Material.BOW, 1);
 		    ItemStack arrow = new ItemStack(Material.ARROW, 1);
-			if (sign.getLine(0).equals(ChatColor.DARK_RED+"[BowParkour]")){
+		    ScoreboardManager manager = Bukkit.getScoreboardManager();
+	        Scoreboard bowscore = manager.getNewScoreboard();
+	        Objective objective = bowscore.registerNewObjective("kills", "playerKillCount");
+	        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+	        objective.setDisplayName(""+ChatColor.RED+ChatColor.BOLD+"Bow Parkour Kills");
+	        if (sign.getLine(0).equals(ChatColor.DARK_RED+"[BowParkour]")){
     			if (sign.getLine(1).equals("Click to Join")){
+    				Arena.setScoreboard(player.getScoreboard());
+    				Score score = objective.getScore(player);
+    				score.setScore(0);
+    				player.getPlayer().setScoreboard(bowscore);
     				Arena.setPlayerMode(player.getGameMode());
     				Arena.setPlayerLoc(player.getLocation());
     				Arena.setBedSpawn(player.getBedSpawnLocation());
@@ -87,6 +99,8 @@ public class BowParkour extends JavaPlugin implements Listener{
     			    player.sendMessage(ChatColor.DARK_RED+"[Bow Parkour]"+ChatColor.AQUA+"Aviso: Si no te aparece los objetos pulsa Q y agarralos.");
     			    Bukkit.broadcastMessage(ChatColor.DARK_RED+"[Bow Parkour]"+ChatColor.AQUA+player.getDisplayName()+" a entrado al juego.");
     			}else if (sign.getLine(1).equals("Click to Finish")){
+    				bowscore.resetScores(player);
+    				player.setScoreboard(Arena.getScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
     				bow.removeEnchantment(Enchantment.ARROW_INFINITE);
     				player.teleport(Arena.getLobby());
     				player.setGameMode(Arena.getPlayerMode());

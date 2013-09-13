@@ -12,6 +12,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.Vector;
 
 import com.gmail.dylan354100mail.bowparkour.arena.*;
@@ -25,6 +29,11 @@ public class BowParkourCommandExecutor implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(sender instanceof Player){
+			ScoreboardManager manager = Bukkit.getScoreboardManager();
+	        Scoreboard bowscore = manager.getNewScoreboard();
+	        Objective objective = bowscore.registerNewObjective("kills", "playerKillCount");
+	        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+	        objective.setDisplayName(""+ChatColor.RED+ChatColor.BOLD+"Bow Parkour Kills");
 			Player player = (Player) sender;
 			ItemStack bow = new ItemStack(Material.BOW, 1); // Un stack de diamantes
 		    ItemStack arrow = new ItemStack(Material.ARROW, 1); // Un stack de diamantes
@@ -72,6 +81,8 @@ public class BowParkourCommandExecutor implements CommandExecutor {
 		sender.sendMessage("No tienes los permisos para usar el comando.");
 	}
 			if(args.length == 1 && args[0].equalsIgnoreCase("join")){
+				Arena.setScoreboard(player.getScoreboard());
+				player.getPlayer().setScoreboard(bowscore);
 				Arena.setPlayerLoc(player.getLocation());
 				Arena.setBedSpawn(player.getBedSpawnLocation());
 				Arena.setPlayerMode(player.getGameMode());
@@ -85,6 +96,8 @@ public class BowParkourCommandExecutor implements CommandExecutor {
 				Bukkit.broadcastMessage(ChatColor.DARK_RED+"[Bow Parkour]"+ChatColor.AQUA+player.getDisplayName()+ChatColor.AQUA+" a entrado al juego.");
 			}
 			if(args.length == 1 && args[0].equalsIgnoreCase("leave")){
+				bowscore.resetScores(player);
+				player.setScoreboard(Arena.getScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
 				bow.removeEnchantment(Enchantment.ARROW_INFINITE);
 				player.teleport(Arena.getPlayerLoc());
 				player.setGameMode(Arena.getPlayerMode());
