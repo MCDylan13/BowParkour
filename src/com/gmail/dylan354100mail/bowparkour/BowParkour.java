@@ -80,10 +80,10 @@ public class BowParkour extends JavaPlugin implements Listener{
 	        Objective objective = bowscore.registerNewObjective("kills", "playerKillCount");
 	        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 	        objective.setDisplayName(""+ChatColor.RED+ChatColor.BOLD+"Bow Parkour Kills");
+			Score score = objective.getScore(player);
 	        if (sign.getLine(0).equals(ChatColor.DARK_RED+"[BowParkour]")){
     			if (sign.getLine(1).equals("Click to Join")){
     				Arena.setScoreboard(player.getScoreboard());
-    				Score score = objective.getScore(player);
     				score.setScore(0);
     				player.getPlayer().setScoreboard(bowscore);
     				Arena.setPlayerMode(player.getGameMode());
